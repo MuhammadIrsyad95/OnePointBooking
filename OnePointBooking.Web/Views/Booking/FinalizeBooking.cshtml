@@ -1,0 +1,136 @@
+﻿@model Booking
+@using System.Globalization
+
+<div class="container pt-4 mt-0 mt-lg-4">
+    <div class="row" style="border: 1px solid #aaa; border-radius: 20px; background-color: white;">
+        <div class="col-12 col-lg-7 p-4 mt-4 mt-md-0">
+            <!-- Back to Home Button -->
+            <div class="row mb-3">
+                <div class="col-6">
+                    <h3 class="text-success">Room Details</h3>
+                </div>
+                <div class="col-6 text-end">
+                    <a href="/" class="btn btn-outline-danger">
+                        <i class="bi bi-arrow-left-circle"></i> Modify Selection
+                    </a>
+                </div>
+            </div>
+
+            <partial name="_BookingDetail" model="@Model" />
+            <hr />
+            <div class="text-end mt-3">
+                <h4 class="text-danger font-weight-bold">
+                    Booking Total:
+                    <span id="BookingTotal">
+                        @Model.TotalCost.ToString("C", new CultureInfo("id-ID"))
+                    </span>
+                </h4>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-5 p-4 mt-4 mt-md-0" style="border-left:1px solid #aaa; border-radius: 20px; background-color: white;">
+            <form method="post">
+                <input asp-for="RoomId" hidden />
+                <input asp-for="UserId" hidden />
+                <input asp-for="RoomPackageId" hidden id="RoomPackageId" />
+                <input asp-for="RoomSetupId" hidden id="RoomSetupId" />
+                <input type="hidden" asp-for="TotalCost" id="TotalCost" name="totalCost" />
+                <input asp-for="StartDate" hidden />
+                <input asp-for="EndDate" hidden />
+                <input asp-for="Days" hidden />
+                <input asp-for="Company" hidden />
+
+                <h3 class="text-success">Enter Booking Details</h3>
+
+                <div class="form-group pt-0">
+                    <label asp-for="Name" class="text-warning">Name</label>
+                    <input asp-for="Name" disabled class="form-control" />
+                    <input type="hidden" asp-for="Name" />
+                </div>
+
+                <div class="form-group pt-2">
+                    <label asp-for="Phone" class="text-warning">Phone</label>
+                    <input asp-for="Phone" disabled class="form-control" />
+                    <input type="hidden" asp-for="Phone" />
+                </div>
+
+                <div class="form-group pt-2">
+                    <label asp-for="Email" class="text-warning">Email</label>
+                    <input asp-for="Email" disabled class="form-control" type="email" />
+                    <input type="hidden" asp-for="Email" />
+                </div>
+
+                <div class="form-group pt-2">
+                    <label asp-for="Company" class="text-warning">Company</label>
+                    <select asp-for="Company" class="form-control" asp-items="ViewBag.Companies" required>
+                        <option value="">Select a Company</option>
+                    </select>
+                </div>
+
+                <div class="form-group pt-2">
+                    <label asp-for="StartDate" class="text-warning">Start Date</label>
+                    <input asp-for="StartDate" disabled class="form-control" />
+                </div>
+
+                <div class="form-group pt-2">
+                    <label asp-for="EndDate" class="text-warning">End Date</label>
+                    <input asp-for="EndDate" disabled class="form-control" />
+                </div>
+
+                <div class="form-group pt-2">
+                    <label asp-for="Days" class="text-warning">No. of days</label>
+                    <input asp-for="Days" disabled class="form-control" />
+                </div>
+
+                <div class="form-group pt-2">
+                    <label asp-for="EventName" class="text-warning">Event Name</label>
+                    <input asp-for="EventName" class="form-control" required />
+                </div>
+
+                <div class="form-group pt-2">
+                    <label asp-for="TotalParticipant" class="text-warning">Total Participant</label>
+                    <input asp-for="TotalParticipant" class="form-control" required type="number" />
+                </div>
+
+                <!-- Submit button (disabled until Room Package is selected) -->
+                <button type="submit" class="btn btn-success form-control mt-3" id="submitButton" disabled>Looks Good! Checkout Now</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/finalizebooking.js"></script>
+
+    <script>
+        // JavaScript to handle enabling/disabling the submit button based on room package selection
+        document.addEventListener('DOMContentLoaded', function () {
+            const roomPackageSelect = document.getElementById('RoomPackage');
+            const submitButton = document.getElementById('submitButton');
+
+            // Function to update the button's enabled/disabled state based on room package selection
+            roomPackageSelect.addEventListener('change', function () {
+                if (roomPackageSelect.value === '') {
+                    submitButton.disabled = true;
+                    submitButton.classList.add('btn-secondary'); // Optional: Adds gray background to indicate disabled state
+                    submitButton.classList.remove('btn-success');
+                } else {
+                    submitButton.disabled = false;
+                    submitButton.classList.add('btn-success');
+                    submitButton.classList.remove('btn-secondary');
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* Custom style for the disabled submit button */
+        #submitButton:disabled {
+            background-color: #d6d6d6; /* Gray background */
+            border-color: #ccc; /* Light gray border */
+            color: #a1a1a1; /* Light gray text */
+            cursor: not-allowed; /* Change cursor to indicate it's disabled */
+        }
+    </style>
+}
